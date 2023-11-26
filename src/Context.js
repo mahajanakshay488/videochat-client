@@ -15,7 +15,7 @@ const ContextProvider = ({ children }) => {
   const [call, setCall] = useState({});
   const [me, setMe] = useState('');
 
-  const myVideo = useRef(null);
+  const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
 
