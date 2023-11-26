@@ -15,7 +15,7 @@ const ContextProvider = ({ children }) => {
   const [call, setCall] = useState({});
   const [me, setMe] = useState('');
 
-  const myVideo = useRef();
+  const myVideo = useRef(null);
   const userVideo = useRef();
   const connectionRef = useRef();
 
@@ -37,8 +37,12 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     console.log("navigator ", navigator);
     console.log("navigator.mediaDevices ", navigator.mediaDevices);
+    console.log("myVideo ", myVideo);
+    console.log("myVideo current ", myVideo.current);
+
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
+        console.log("myVideo",myVideo, "myVideo current", myVideo.current);
         console.log("currentStream ", currentStream);
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
