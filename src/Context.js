@@ -35,11 +35,14 @@ const ContextProvider = ({ children }) => {
   // }, []);
 
   useEffect(() => {
+    console.log("navigator ", navigator);
+    console.log("navigator.mediaDevices ", navigator.mediaDevices);
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
+        console.log("currentStream ", currentStream);
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
-        console.log("currentStream", currentStream)
+        console.log("currentStream", currentStream);
       })
       .catch((error) => {
         console.error('Error accessing media devices:', error);
