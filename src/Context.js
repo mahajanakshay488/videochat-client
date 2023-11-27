@@ -35,10 +35,10 @@ const ContextProvider = ({ children }) => {
   // }, []);
 
   useEffect(() => {
-    console.log("navigator ", navigator);
-    console.log("navigator.mediaDevices ", navigator.mediaDevices);
-    console.log("myVideo ", myVideo);
-    console.log("myVideo current ", myVideo.current);
+    // console.log("navigator ", navigator);
+    // console.log("navigator.mediaDevices ", navigator.mediaDevices);
+    // console.log("myVideo ", myVideo);
+    // console.log("myVideo current ", myVideo.current);
 
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
@@ -46,7 +46,6 @@ const ContextProvider = ({ children }) => {
         console.log("currentStream ", currentStream);
         setStream(currentStream);
         myVideo.current.srcObject = currentStream;
-        console.log("currentStream", currentStream);
       })
       .catch((error) => {
         console.error('Error accessing media devices:', error);
@@ -55,6 +54,7 @@ const ContextProvider = ({ children }) => {
   
     socket.on('callUser', ({ from, name: callerName, signal }) => {
       setCall({ isReceivingCall: true, from, name: callerName, signal });
+      console.log('recievingCall signal: ', signal);
     });
   }, [myVideo, myVideo.current]);
   
@@ -66,15 +66,16 @@ const ContextProvider = ({ children }) => {
       initiator: false,
       trickle: false,
       stream,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' }, // Example STUN server
-          // Add more STUN or TURN servers as needed
-        ],
-      },
+      // config: {
+      //   iceServers: [
+      //     { urls: 'stun:stun.l.google.com:19302' },
+      //     { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+      //   ],
+      // },
     });
   
     peer.on('signal', (data) => {
+      console.log("peer on signal answerCall: ", data);
       socket.emit('answerCall', { signal: data, to: call.from });
     });
   
@@ -92,25 +93,27 @@ const ContextProvider = ({ children }) => {
       initiator: true,
       trickle: false,
       stream,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' }, // Example STUN server
-          // Add more STUN or TURN servers as needed
-        ],
-      },
+      // config: {
+      //   iceServers: [
+      //     { urls: 'stun:stun.l.google.com:19302' },
+      //     { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+      //   ],
+      // },
     });
   
     peer.on('signal', (data) => {
+      console.log('callUSer on signal: ', data);
       socket.emit('callUser', { userToCall: id, signalData: data, from: me, name });
     });
   
     peer.on('stream', (currentStream) => {
+      console.log('peer on userStream: ', currentStream);
       userVideo.current.srcObject = currentStream;
     });
   
     socket.on('callAccepted', (signal) => {
       setCallAccepted(true);
-  
+      console.log("acceptedCall signal: ", signal);
       peer.signal(signal);
     });
   
